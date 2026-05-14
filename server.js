@@ -14,9 +14,11 @@ const initSocket = require('./socket/socket');
 
 const app = express();
 
-app.use(cors({ origin: process.env.CLIENT_ORIGIN, credentials: true }));
+const corsOrigin = process.env.NODE_ENV === 'development' ? true : process.env.CLIENT_ORIGIN;
+app.use(cors({ origin: corsOrigin, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(__dirname));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/rooms', roomRoutes);
@@ -27,7 +29,7 @@ app.use(errorHandler);
 
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
-  cors: { origin: process.env.CLIENT_ORIGIN, credentials: true },
+  cors: { origin: corsOrigin, credentials: true },
 });
 
 app.set('io', io);

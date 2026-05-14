@@ -13,7 +13,7 @@ const {
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: process.env.NODE_ENV === 'development' ? 500 : 10,
   message: { success: false, message: 'Too many requests, please try again later' },
 });
 
